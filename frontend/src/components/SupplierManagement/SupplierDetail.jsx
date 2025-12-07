@@ -35,7 +35,16 @@ const SupplierDetail = ({ selectedSupplier, onSupplierSelect, onSupplierUpdate }
   };
 
   const handleEditSupplier = (supplier) => {
-    setCurrentSupplier({ ...supplier });
+    console.log('SupplierDetail: 处理编辑模式，传入的supplier对象:', supplier);
+    console.log('SupplierDetail: 处理编辑模式，supplier.isDomestic:', supplier?.isDomestic);
+    
+    // 确保传递的supplier对象包含isDomestic属性
+    const supplierWithDomestic = {
+      ...supplier,
+      isDomestic: supplier?.isDomestic !== undefined ? supplier.isDomestic : false
+    };
+    
+    setCurrentSupplier(supplierWithDomestic);
     setSupplierModalMode('edit');
     setIsSupplierModalOpen(true);
   };
@@ -114,13 +123,18 @@ const SupplierDetail = ({ selectedSupplier, onSupplierSelect, onSupplierUpdate }
       }
 
       // 映射API返回的数据到前端格式
+      console.log('SupplierDetail: 映射API数据前，frontendData.isDomestic:', frontendData?.isDomestic);
+      console.log('SupplierDetail: 映射API数据前，updatedSupplierData.is_domestic:', updatedSupplierData?.is_domestic);
+      
       const frontendFormat = {
         id: updatedSupplierData.id,
         key: String(updatedSupplierData.id),
         name: updatedSupplierData.name,
         description: updatedSupplierData.description,
-        isDomestic: frontendData.isDomestic !== undefined ? frontendData.isDomestic : updatedSupplierData.is_domestic || false
+        isDomestic: frontendData?.isDomestic !== undefined ? frontendData.isDomestic : updatedSupplierData?.is_domestic || false
       };
+      
+      console.log('SupplierDetail: 映射后的前端数据格式:', frontendFormat);
 
       // 立即更新本地currentSupplier状态
       setCurrentSupplier(frontendFormat);
@@ -271,7 +285,7 @@ const SupplierDetail = ({ selectedSupplier, onSupplierSelect, onSupplierUpdate }
           </button>
           <button
             className="btn-delete"
-            onClick={() => handleDeleteSupplier(selectedSupplier.id)}
+            onClick={() => handleDeleteSupplier(selectedSupplier)}
             title="删除供应商"
             style={{
               padding: '6px 6px',

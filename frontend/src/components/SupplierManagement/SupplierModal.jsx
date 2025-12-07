@@ -21,6 +21,8 @@ const SupplierModal = ({ isOpen, onClose, onSave, supplier = null, mode = 'add' 
         logo: supplier.logo || '',
         website: supplier.website || ''
       });
+      console.log('SupplierModal: 编辑模式初始化，supplier数据:', supplier);
+      console.log('SupplierModal: 编辑模式初始化，supplier.isDomestic:', supplier.isDomestic);
       // 重置文件和预览
       setFile(null);
       // 处理logo预览URL，现在后端直接返回前端可访问的路径格式
@@ -86,7 +88,7 @@ const SupplierModal = ({ isOpen, onClose, onSave, supplier = null, mode = 'add' 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (mode === 'add' && !formData.name) {
+    if (!formData.name) {
       alert('供应商名称为必填项');
       return;
     }
@@ -115,8 +117,16 @@ const SupplierModal = ({ isOpen, onClose, onSave, supplier = null, mode = 'add' 
       
       console.log('SupplierModal: 准备调用onSave，提交的FormData:', formDataToSubmit);
       
-      // 调用父组件的保存函数，传递FormData
-      await onSave(formDataToSubmit);
+      // 准备前端数据对象，包含isDomestic信息（从supplier中获取或设置默认值）
+      const frontendData = {
+        isDomestic: supplier?.isDomestic !== undefined ? supplier.isDomestic : false
+      };
+      
+      console.log('SupplierModal: handleSubmit，frontendData对象:', frontendData);
+      console.log('SupplierModal: handleSubmit，supplier对象:', supplier);
+      
+      // 调用父组件的保存函数，传递FormData和前端数据
+      await onSave(formDataToSubmit, frontendData);
       console.log('SupplierModal: onSave调用成功，准备关闭模态窗口');
       onClose();
     } catch (error) {

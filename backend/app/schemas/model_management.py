@@ -8,14 +8,25 @@ from app.schemas.model_category import ModelCategoryResponse
 
 # ModelSupplier 相关schemas
 class ModelSupplierBase(BaseModel):
-    """模型供应商基础模型"""
+    """模型供应商基础模型
+    
+    该模型定义了模型供应商的基本字段，作为创建、更新和响应模型的基础类。
+    """
+    # 配置Pydantic模型，允许使用以"model_"开头的字段名
     model_config = ConfigDict(protected_namespaces=())
+    # 供应商名称，必填字段，长度1-100个字符
     name: str = Field(..., min_length=1, max_length=100)
+    # 供应商显示名称，必填字段，长度1-100个字符
     display_name: str = Field(..., min_length=1, max_length=100)
+    # 供应商描述，可选字段
     description: Optional[str] = None
+    # 供应商API基础URL，可选字段
     base_url: Optional[str] = None
+    # API密钥环境变量名称，可选字段，用于从环境变量中读取密钥
     api_key_env_name: Optional[str] = None
+    # 供应商是否激活，默认为True
     is_active: bool = True
+    # 供应商logo图片路径，可选字段
     logo: Optional[str] = None
 
 
